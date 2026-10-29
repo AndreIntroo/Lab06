@@ -41,18 +41,24 @@ class DepositoStrumenti:
             print("EEORE: fallita la connessione al database selezionato")
             return None
         lista_strumenti = []
-        # capire se mettere un try/ catch per la connessione
         cursor = cnx.cursor()
-        query = "SELECT * FROM strumento"
-        cursor.execute(query)
+        try:
+            query = "SELECT * FROM strumento"
+            cursor.execute(query)
 
-        for (codice, tipo , marca, anno, valore, isdisponibile) in cursor:
-            s = Strumento(codice, tipo, marca, anno, valore,isdisponibile)
-            lista_strumenti.append(s)
+            for (codice, tipo , marca, anno, valore, isdisponibile) in cursor:
+                s = Strumento(codice, tipo, marca, anno, valore,isdisponibile)
+                lista_strumenti.append(s)
 
-        cursor.close()
-        cnx.close()
-        return lista_strumenti
+            cursor.close()
+            cnx.close()
+            return lista_strumenti
+        except Exception as e:
+            print("ERRORE: errore nel recupero degli strumenti dal dastabase")
+            return None
+        finally:
+            cursor.close()
+            cnx.close()
 
 
     def cerca_strumenti_per_tipo(self, tipo) -> list[Strumento] | None:
@@ -67,17 +73,24 @@ class DepositoStrumenti:
             print("EEORE: fallita la connessione al database selezionato")
             return None
         lista_strumenti_tipo = []
-
         cursor = cnx.cursor()
-        query = "SELECT * FROM strumento WHERE tipo =%s "
-        cursor.execute(query,(tipo,))
+        try:
 
-        for (codice, tipo, marca, anno, valore,isdisponibile) in cursor:
-            s = Strumento(codice, tipo, marca, anno, valore, isdisponibile)
-            lista_strumenti_tipo.append(s)
-        cursor.close()
-        cnx.close()
-        return lista_strumenti_tipo
+            query = "SELECT * FROM strumento WHERE tipo =%s "
+            cursor.execute(query,(tipo,))
+
+            for (codice, tipo, marca, anno, valore,isdisponibile) in cursor:
+                s = Strumento(codice, tipo, marca, anno, valore, isdisponibile)
+                lista_strumenti_tipo.append(s)
+            cursor.close()
+            cnx.close()
+            return lista_strumenti_tipo
+        except Exception as e:
+            print("si è verificato un errore durante la ricerca ")
+            return None
+        finally:
+            cnx.close()
+            cursor.close()
 
 
 
